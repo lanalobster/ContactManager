@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ContactManager.Models.Contact>
+
+@{
+    ViewBag.Title = "Contacts";
+}
+
+<h2>Contacts</h2>
+<p>Press on a field name to sort</p>
+<p>Changes will be saved automatically</p>
+
+<table class="table table-hover" id="data-table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Married)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Salary)
+        </th>
+        <th></th>
+    </tr>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="my-row">
+                <td style="display:none">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td contenteditable="true" class="changeable">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                @{
+                    List<string> dateParts = new List<string>(item.DateOfBirth.Split('.'));
+                    dateParts.Reverse();
+                    string date = string.Join("-", dateParts.ToArray());
+                }
+                <td contenteditable="true" class="changeable">
+                    <input type='date' value='@date' min='1920-01-01'>
+                </td>
+                <td class="dropdown changeable" contenteditable="true">
+                    <select name="filter_for">
+                        <option @(item.Married.Equals(true) ? "selected" : "") value="Yes">Yes</option>
+                        <option @(item.Married.Equals(true) ? "" : "selected") value="No">No</option>
+                    </select>
+
+                </td>
+                <td contenteditable="true" class="changeable">
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td contenteditable="true" class="changeable">
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default" style="visibility: hidden"
+                            onclick="location.href = '@Url.Action("Delete", "Contacts", new {id = item.Id})'">
+                        <span class="glyphicon glyphicon-remove remove-button" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+@section scripts
+{
+    @Scripts.Render("~/scripts/table-helper.js")
+}
